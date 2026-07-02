@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>System Settings</h1>
+        <div class="breadcrumb">Home > Settings</div>
+    </div>
+    <button class="btn btn-primary">Save All Settings</button>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr; gap: 24px; max-width: 800px;">
+    <!-- General Settings -->
+    <div class="card">
+        <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--color-border); padding-bottom: 10px;">General</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="form-group">
+                <label class="form-label">Application Name</label>
+                <input type="text" class="form-control" value="UserTrack">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Timezone</label>
+                <select class="form-control">
+                    <option value="UTC">UTC (Universal Coordinated Time)</option>
+                    <option value="EST">EST (Eastern Standard Time)</option>
+                    <option value="PST">PST (Pacific Standard Time)</option>
+                    <option value="IST" selected>IST (Indian Standard Time - UTC+05:30)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Date Format</label>
+                <select class="form-control">
+                    <option value="YYYY-MM-DD" selected>YYYY-MM-DD</option>
+                    <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                    <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Items per page</label>
+                <select class="form-control">
+                    <option value="10">10</option>
+                    <option value="25" selected>25</option>
+                    <option value="50">50</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Appearance -->
+    <div class="card">
+        <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--color-border); padding-bottom: 10px;">Appearance</h3>
+        <div class="form-group">
+            <label class="form-label">Theme Preference</label>
+            <div style="display: flex; gap: 16px;">
+                <label style="display: flex; align-items: center; gap: 8px;">
+                    <input type="radio" name="theme" value="light" checked> Light
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px;">
+                    <input type="radio" name="theme" value="dark"> Dark
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px;">
+                    <input type="radio" name="theme" value="system"> System Default
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="card">
+        <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--color-border); padding-bottom: 10px;">Notifications</h3>
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+            <label style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <div style="font-weight: 500;">Email Notifications</div>
+                    <div style="font-size: 0.875rem; color: var(--color-text-muted);">Receive summary reports via email</div>
+                </div>
+                <input type="checkbox" checked class="form-control" style="width: auto; height: 20px;">
+            </label>
+            <label style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <div style="font-weight: 500;">In-App Alerts</div>
+                    <div style="font-size: 0.875rem; color: var(--color-text-muted);">Show notifications in the top bar</div>
+                </div>
+                <input type="checkbox" checked class="form-control" style="width: auto; height: 20px;">
+            </label>
+        </div>
+    </div>
+
+    <!-- Security -->
+    <div class="card" style="border: 1px solid var(--color-danger);">
+        <h3 style="margin-bottom: 20px; color: var(--color-danger); border-bottom: 1px solid rgba(244, 63, 94, 0.2); padding-bottom: 10px;">Security & Sessions</h3>
+        <div class="form-group">
+            <label class="form-label">Session Timeout (minutes)</label>
+            <input type="number" class="form-control" value="60" style="max-width: 150px;">
+        </div>
+        <div style="margin-top: 20px;">
+            <button class="btn btn-outline" style="color: var(--color-danger); border-color: var(--color-danger);">Force Logout All Sessions</button>
+            <p style="font-size: 0.875rem; color: var(--color-text-muted); margin-top: 8px;">This will immediately log out all users across all devices.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

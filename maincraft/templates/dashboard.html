@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Dashboard Overview</h1>
+        <div class="breadcrumb">Home > Dashboard</div>
+    </div>
+    <div style="display: flex; gap: 10px;">
+        <a href="{{ url_for('user_new') }}" class="btn btn-primary">+ Add New User</a>
+        <a href="{{ url_for('reports') }}" class="btn btn-outline">Export Report</a>
+    </div>
+</div>
+
+<!-- KPI Cards -->
+<div class="dashboard-grid">
+    <div class="card kpi-card">
+        <div class="kpi-title">Total Users</div>
+        <div class="kpi-value">{{ total_users }}</div>
+        <div style="color: var(--color-success); font-size: 0.875rem; margin-top: 8px;">↑ 12% from last month</div>
+    </div>
+    <div class="card kpi-card">
+        <div class="kpi-title">Active Users</div>
+        <div class="kpi-value">{{ active_users }}</div>
+        <div style="color: var(--color-success); font-size: 0.875rem; margin-top: 8px;">
+            {% if total_users > 0 %}{{ (active_users / total_users * 100)|round|int }}% of total{% else %}0%{% endif %}
+        </div>
+    </div>
+    <div class="card kpi-card">
+        <div class="kpi-title">Inactive Users</div>
+        <div class="kpi-value">{{ inactive_users }}</div>
+        <div style="color: var(--color-danger); font-size: 0.875rem; margin-top: 8px;">Requires review</div>
+    </div>
+   
+</div>
+
+<!-- Charts Section -->
+<div class="charts-grid" style="margin-bottom: 24px; min-height: 350px;">
+    <div class="card" style="display: flex; flex-direction: column;">
+        <h3 style="margin-bottom: 20px;">Monthly Registrations</h3>
+        <div style="flex-grow: 1; position: relative; min-height: 300px;">
+            <canvas id="barChart"></canvas>
+        </div>
+    </div>
+    <div class="card" style="display: flex; flex-direction: column;">
+        <h3 style="margin-bottom: 20px;">Role Distribution</h3>
+        <div style="flex-grow: 1; position: relative; min-height: 300px;">
+            <canvas id="pieChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Section -->
+<div class="charts-grid" style="min-height: 350px;">
+    <div class="card" style="display: flex; flex-direction: column;">
+        <h3 style="margin-bottom: 20px;">Activity Trends</h3>
+        <div style="flex-grow: 1; position: relative; min-height: 300px;">
+            <canvas id="lineChart"></canvas>
+        </div>
+    </div>
+    <div class="card" style="padding: 0; display: flex; flex-direction: column;">
+        <div style="padding: 24px 24px 0 24px;">
+            <h3 style="margin-bottom: 20px;">Recent Activity</h3>
+        </div>
+        <div class="table-container" style="border: none; border-radius: 0; border-top: 1px solid var(--color-border); flex-grow: 1; overflow-y: auto;">
+            <table>
+                <tbody>
+                    {% for log in recent_logs %}
+                    <tr>
+                        <td style="padding: 12px 24px;">
+                            <div style="font-weight: 500;">{{ log.action }}</div>
+                            <div style="font-size: 0.75rem; color: var(--color-text-muted);">by {{ log.actor_name }}</div>
+                        </td>
+                        <td style="padding: 12px 24px; text-align: right;">
+                            <div class="mono" style="font-size: 0.75rem; color: var(--color-text-muted);">{{ log.timestamp.strftime('%Y-%m-%d %H:%M') }}</div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="2" style="text-align: center; color: var(--color-text-muted); padding: 24px;">No recent activity</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' } }
+    };
+
+    // Monthly Registrations - Bar Chart
+    new Chart(document.getElementById('barChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+            datasets: [{
+                label: 'New Users',
+                data: [12, 19, 3, 5, 2, 3],
+                backgroundColor: 'rgba(99, 102, 241, 0.8)',
+                borderRadius: 4
+            }]
+        },
+        options: chartOptions
+    });
+
+    // Role Distribution - Doughnut Chart
+    new Chart(document.getElementById('pieChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Super Admin', 'Admin', 'Moderator', 'Viewer'],
+            datasets: [{
+                data: [1, 3, 5, 12],
+                backgroundColor: [
+                    '#3730A3', '#6366F1', '#06B6D4', '#E2E8F0'
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: { legend: { position: 'right' } }
+        }
+    });
+
+    // Activity Trends - Line Chart
+    new Chart(document.getElementById('lineChart'), {
+        type: 'line',
+        data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [{
+                label: 'Active Sessions',
+                data: [65, 59, 80, 81, 56, 55, 40],
+                borderColor: '#10B981',
+                tension: 0.4,
+                fill: true,
+                backgroundColor: 'rgba(16, 185, 129, 0.1)'
+            }]
+        },
+        options: chartOptions
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UserTrack - Professional User Management</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=2.0">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="toast {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <span class="nav-icon">🛡️</span>
+                    <span class="logo-text">UserTrack</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('dashboard') }}" class="nav-item {{ 'active' if request.endpoint == 'dashboard' else '' }}">
+                    <span class="nav-icon"></span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="{{ url_for('users_list') }}" class="nav-item {{ 'active' if 'user' in request.endpoint else '' }}">
+                    <span class="nav-icon"></span>
+                    <span class="nav-text">User Management</span>
+                </a>
+                <a href="{{ url_for('roles_list') }}" class="nav-item {{ 'active' if request.endpoint == 'roles_list' else '' }}">
+                    <span class="nav-icon"></span>
+                    <span class="nav-text">Roles & Permissions</span>
+                </a>
+                <a href="{{ url_for('logs_list') }}" class="nav-item {{ 'active' if request.endpoint == 'logs_list' else '' }}">
+                    <span class="nav-icon"></span>
+                    <span class="nav-text">Activity Logs</span>
+                </a>
+                <a href="{{ url_for('reports') }}" class="nav-item {{ 'active' if request.endpoint == 'reports' else '' }}">
+                    <span class="nav-icon"></span>
+                    <span class="nav-text">Reports</span>
+                </a>
+                <a href="{{ url_for('settings') }}" class="nav-item {{ 'active' if request.endpoint == 'settings' else '' }}">
+                    <span class="nav-icon"></span>
+                    <span class="nav-text">Settings</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navbar -->
+            <header class="top-navbar">
+                <div class="navbar-left">
+                    <button class="icon-btn" id="sidebarToggle">☰</button>
+                    <div class="search-bar">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" class="search-input" placeholder="Search users, roles...">
+                    </div>
+                </div>
+                <div class="navbar-right">
+                    <button class="icon-btn" id="themeToggle">🌙</button>
+                    <button class="icon-btn">
+                        🔔
+                        <span class="badge">3</span>
+                    </button>
+                    <div class="user-profile">
+                        <div class="avatar">{{ current_user.username[0]|upper }}</div>
+                        <span style="font-weight: 500;">{{ current_user.full_name or current_user.username }} ▼</span>
+                    </div>
+                    <a href="{{ url_for('logout') }}" class="btn btn-outline" style="padding: 6px 12px; margin-left: 10px;">Logout</a>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="page-content">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

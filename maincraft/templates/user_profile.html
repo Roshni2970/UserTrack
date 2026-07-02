@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>{{ user.full_name or user.username }}</h1>
+        <div class="breadcrumb">Home > Users > {{ user.username }}</div>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 24px;">
+    <!-- Profile Hero Card -->
+    <div class="card" style="text-align: center;">
+        <div class="avatar" style="width: 100px; height: 100px; font-size: 2.5rem; margin: 0 auto 20px;">{{ user.username[0]|upper }}</div>
+        <h2 style="margin-bottom: 5px;">{{ user.full_name or user.username }}</h2>
+        <p style="color: var(--color-text-muted); margin-bottom: 15px;">@{{ user.username }}</p>
+        
+        <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 24px;">
+            <span class="role-badge">{{ user.role.name }}</span>
+            <span class="status-badge status-{{ user.status|lower }}">{{ user.status }}</span>
+        </div>
+        
+        <p style="font-size: 0.875rem; color: var(--color-text-muted); margin-bottom: 24px;">Registered on {{ user.created_at.strftime('%b %d, %Y') }}</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            <a href="#" class="btn btn-primary" style="width: 100%;">Edit User</a>
+            <button class="btn btn-outline" style="width: 100%; color: var(--color-danger); border-color: var(--color-danger);">Delete User</button>
+        </div>
+    </div>
+
+    <!-- Details and Activity -->
+    <div>
+        <div class="card" style="margin-bottom: 24px;">
+            <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--color-border); padding-bottom: 10px;">Profile Details</h3>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h4 style="color: var(--color-text-muted); font-size: 0.875rem; text-transform: uppercase; margin-bottom: 12px;">Personal Info</h4>
+                    <div style="margin-bottom: 12px;">
+                        <div style="font-size: 0.875rem; color: var(--color-text-muted);">Full Name</div>
+                        <div>{{ user.full_name or 'N/A' }}</div>
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <div style="font-size: 0.875rem; color: var(--color-text-muted);">Date of Birth</div>
+                        <div>{{ user.dob.strftime('%b %d, %Y') if user.dob else 'N/A' }}</div>
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <div style="font-size: 0.875rem; color: var(--color-text-muted);">Phone Number</div>
+                        <div>{{ user.phone or 'N/A' }}</div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 style="color: var(--color-text-muted); font-size: 0.875rem; text-transform: uppercase; margin-bottom: 12px;">Account Info</h4>
+                    <div style="margin-bottom: 12px;">
+                        <div style="font-size: 0.875rem; color: var(--color-text-muted);">Email Address</div>
+                        <div>{{ user.email }}</div>
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <div style="font-size: 0.875rem; color: var(--color-text-muted);">Department</div>
+                        <div>{{ user.department or 'N/A' }}</div>
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <div style="font-size: 0.875rem; color: var(--color-text-muted);">Notes</div>
+                        <div style="font-size: 0.875rem;">{{ user.notes or 'No notes provided.' }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--color-border); padding-bottom: 10px;">Activity Log</h3>
+            <div class="table-container" style="border: none; border-radius: 0;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Action</th>
+                            <th>Timestamp</th>
+                            <th>IP Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in activity %}
+                        <tr>
+                            <td>{{ log.action }}</td>
+                            <td><span class="mono" style="font-size: 0.875rem;">{{ log.timestamp.strftime('%Y-%m-%d %H:%M') }}</span></td>
+                            <td><span class="mono" style="font-size: 0.875rem;">{{ log.ip_address }}</span></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="3" style="text-align: center; color: var(--color-text-muted); padding: 24px;">No activity recorded yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

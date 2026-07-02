@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>User Management</h1>
+        <div class="breadcrumb">Home > Users</div>
+    </div>
+    <a href="{{ url_for('user_new') }}" class="btn btn-primary">+ Add New User</a>
+</div>
+
+<div class="card" style="margin-bottom: 24px;">
+    <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 20px;">
+        <div class="search-bar" style="flex-grow: 1;">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" style="width: 100%;" placeholder="Search by name, email, or username...">
+        </div>
+        <select class="form-control" style="width: auto;">
+            <option value="">All Roles</option>
+            <option value="Admin">Admin</option>
+            <option value="Moderator">Moderator</option>
+        </select>
+        <select class="form-control" style="width: auto;">
+            <option value="">All Statuses</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+        </select>
+        <button class="btn btn-outline">Filter</button>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 40px;"><input type="checkbox"></th>
+                    <th>User</th>
+                    <th>Contact</th>
+                    <th>Role</th>
+                    <th>Department</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div class="avatar" style="width: 32px; height: 32px;">{{ user.username[0]|upper }}</div>
+                            <div>
+                                <div style="font-weight: 500;">{{ user.full_name or user.username }}</div>
+                                <div style="font-size: 0.75rem; color: var(--color-text-muted);">@{{ user.username }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div>{{ user.email }}</div>
+                        <div style="font-size: 0.75rem; color: var(--color-text-muted);">{{ user.phone or 'N/A' }}</div>
+                    </td>
+                    <td><span class="role-badge">{{ user.role.name }}</span></td>
+                    <td>{{ user.department or 'N/A' }}</td>
+                    <td>
+                        <span class="status-badge status-{{ user.status|lower }}">{{ user.status }}</span>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 8px;">
+                            <a href="{{ url_for('user_profile', id=user.id) }}" class="icon-btn" title="View">👁️</a>
+                            <a href="#" class="icon-btn" title="Edit">✏️</a>
+                            <a href="#" class="icon-btn" style="color: var(--color-danger);" title="Delete">🗑️</a>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7">
+                        <div class="empty-state">
+                            <div class="empty-icon">👥</div>
+                            <h3>No users found</h3>
+                            <p style="margin-top: 8px; margin-bottom: 16px;">Get started by creating your first user.</p>
+                            <a href="{{ url_for('user_new') }}" class="btn btn-primary">Add User</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+        <div style="color: var(--color-text-muted); font-size: 0.875rem;">Showing {{ users|length }} users</div>
+        <div style="display: flex; gap: 8px;">
+            <button class="btn btn-outline" disabled>Previous</button>
+            <button class="btn btn-outline" disabled>Next</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

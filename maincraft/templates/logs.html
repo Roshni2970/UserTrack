@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Activity & Audit Logs</h1>
+        <div class="breadcrumb">Home > Activity Logs</div>
+    </div>
+    <button class="btn btn-outline">Export CSV</button>
+</div>
+
+<div class="card">
+    <div style="display: flex; gap: 16px; margin-bottom: 20px;">
+        <input type="text" class="form-control" placeholder="Search by actor..." style="max-width: 300px;">
+        <select class="form-control" style="width: auto;">
+            <option value="">All Actions</option>
+            <option value="Login">Login</option>
+            <option value="Logout">Logout</option>
+            <option value="Create">Create User</option>
+            <option value="Delete">Delete User</option>
+        </select>
+        <input type="date" class="form-control" style="width: auto;">
+        <button class="btn btn-outline">Clear Filters</button>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Actor</th>
+                    <th>Action</th>
+                    <th>Target</th>
+                    <th>Timestamp</th>
+                    <th>IP Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td><strong>{{ log.actor_name }}</strong></td>
+                    <td>
+                        <span class="status-badge" style="background-color: {% if log.action == 'Login' %}var(--color-success){% elif log.action == 'Logout' %}var(--color-warning){% else %}var(--color-primary-light){% endif %}; color: white; opacity: 0.9;">
+                            {{ log.action }}
+                        </span>
+                    </td>
+                    <td>{{ log.target or 'N/A' }}</td>
+                    <td><span class="mono" style="font-size: 0.875rem;">{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</span></td>
+                    <td><span class="mono" style="font-size: 0.875rem;">{{ log.ip_address }}</span></td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5">
+                        <div class="empty-state">
+                            <div class="empty-icon">📋</div>
+                            <h3>No logs found</h3>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

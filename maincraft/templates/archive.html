@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Archive & Recycle Bin</h1>
+        <div class="breadcrumb">Home > Archive</div>
+    </div>
+</div>
+
+<div class="card" style="margin-bottom: 24px; border-left: 4px solid var(--color-warning);">
+    <div style="display: flex; gap: 16px; align-items: center;">
+        <span style="font-size: 1.5rem;">⚠️</span>
+        <div>
+            <h4 style="margin-bottom: 4px;">Soft-deleted Users</h4>
+            <p style="font-size: 0.875rem; color: var(--color-text-muted);">Users in the archive can be restored or permanently deleted. Permanent deletion cannot be undone.</p>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" placeholder="Search archived users...">
+        </div>
+        <div style="display: flex; gap: 12px;">
+            <button class="btn btn-outline" style="color: var(--color-success); border-color: var(--color-success);">Bulk Restore</button>
+            <button class="btn btn-outline" style="color: var(--color-danger); border-color: var(--color-danger);">Bulk Delete</button>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 40px;"><input type="checkbox"></th>
+                    <th>User</th>
+                    <th>Role</th>
+                    <th>Deleted By</th>
+                    <th>Deleted On</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in archived_users %}
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div class="avatar" style="width: 32px; height: 32px;">{{ user.username[0]|upper }}</div>
+                            <div>
+                                <div style="font-weight: 500;">{{ user.full_name or user.username }}</div>
+                                <div style="font-size: 0.75rem; color: var(--color-text-muted);">{{ user.email }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="role-badge">{{ user.role.name }}</span></td>
+                    <td>Admin User</td>
+                    <td><span class="mono" style="font-size: 0.875rem;">{{ user.updated_at.strftime('%Y-%m-%d %H:%M') if user.updated_at else 'N/A' }}</span></td>
+                    <td>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn btn-primary" style="padding: 4px 12px; font-size: 0.75rem;">Restore</button>
+                            <button class="btn btn-outline" style="padding: 4px 12px; font-size: 0.75rem; color: var(--color-danger); border-color: var(--color-danger);">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <div class="empty-icon">🗄️</div>
+                            <h3>Archive is empty</h3>
+                            <p style="margin-top: 8px;">There are no deleted users in the recycle bin.</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
